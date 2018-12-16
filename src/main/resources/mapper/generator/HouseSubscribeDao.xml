@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xunwu.frist.demo.dao.HouseSubscribeDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xunwu.frist.demo.entity.HouseSubscribeEntity" id="houseSubscribeMap">
+        <result property="id" column="id"/>
+        <result property="houseId" column="house_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="desc" column="desc"/>
+        <result property="status" column="status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="lastUpdateTime" column="last_update_time"/>
+        <result property="orderTime" column="order_time"/>
+        <result property="telephone" column="telephone"/>
+        <result property="adminId" column="admin_id"/>
+    </resultMap>
+
+	<select id="queryObject" resultType="com.xunwu.frist.demo.entity.HouseSubscribeEntity">
+		select * from house_subscribe where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="com.xunwu.frist.demo.entity.HouseSubscribeEntity">
+		select * from house_subscribe
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from house_subscribe 
+	</select>
+	 
+	<insert id="save" parameterType="com.xunwu.frist.demo.entity.HouseSubscribeEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into house_subscribe
+		(
+			`house_id`, 
+			`user_id`, 
+			`desc`, 
+			`status`, 
+			`create_time`, 
+			`last_update_time`, 
+			`order_time`, 
+			`telephone`, 
+			`admin_id`
+		)
+		values
+		(
+			#{houseId}, 
+			#{userId}, 
+			#{desc}, 
+			#{status}, 
+			#{createTime}, 
+			#{lastUpdateTime}, 
+			#{orderTime}, 
+			#{telephone}, 
+			#{adminId}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.xunwu.frist.demo.entity.HouseSubscribeEntity">
+		update house_subscribe 
+		<set>
+			<if test="houseId != null">`house_id` = #{houseId}, </if>
+			<if test="userId != null">`user_id` = #{userId}, </if>
+			<if test="desc != null">`desc` = #{desc}, </if>
+			<if test="status != null">`status` = #{status}, </if>
+			<if test="createTime != null">`create_time` = #{createTime}, </if>
+			<if test="lastUpdateTime != null">`last_update_time` = #{lastUpdateTime}, </if>
+			<if test="orderTime != null">`order_time` = #{orderTime}, </if>
+			<if test="telephone != null">`telephone` = #{telephone}, </if>
+			<if test="adminId != null">`admin_id` = #{adminId}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from house_subscribe where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from house_subscribe where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

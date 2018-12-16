@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xunwu.frist.demo.dao.HouseDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xunwu.frist.demo.entity.HouseEntity" id="houseMap">
+        <result property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="price" column="price"/>
+        <result property="area" column="area"/>
+        <result property="room" column="room"/>
+        <result property="floor" column="floor"/>
+        <result property="totalFloor" column="total_floor"/>
+        <result property="watchTimes" column="watch_times"/>
+        <result property="buildYear" column="build_year"/>
+        <result property="status" column="status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="lastUpdateTime" column="last_update_time"/>
+        <result property="cityEnName" column="city_en_name"/>
+        <result property="regionEnName" column="region_en_name"/>
+        <result property="cover" column="cover"/>
+        <result property="direction" column="direction"/>
+        <result property="distanceToSubway" column="distance_to_subway"/>
+        <result property="parlour" column="parlour"/>
+        <result property="district" column="district"/>
+        <result property="adminId" column="admin_id"/>
+        <result property="bathroom" column="bathroom"/>
+        <result property="street" column="street"/>
+    </resultMap>
+
+	<select id="queryObject" resultType="com.xunwu.frist.demo.entity.HouseEntity">
+		select * from house where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="com.xunwu.frist.demo.entity.HouseEntity">
+		select * from house
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from house 
+	</select>
+	 
+	<insert id="save" parameterType="com.xunwu.frist.demo.entity.HouseEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into house
+		(
+			`title`, 
+			`price`, 
+			`area`, 
+			`room`, 
+			`floor`, 
+			`total_floor`, 
+			`watch_times`, 
+			`build_year`, 
+			`status`, 
+			`create_time`, 
+			`last_update_time`, 
+			`city_en_name`, 
+			`region_en_name`, 
+			`cover`, 
+			`direction`, 
+			`distance_to_subway`, 
+			`parlour`, 
+			`district`, 
+			`admin_id`, 
+			`bathroom`, 
+			`street`
+		)
+		values
+		(
+			#{title}, 
+			#{price}, 
+			#{area}, 
+			#{room}, 
+			#{floor}, 
+			#{totalFloor}, 
+			#{watchTimes}, 
+			#{buildYear}, 
+			#{status}, 
+			#{createTime}, 
+			#{lastUpdateTime}, 
+			#{cityEnName}, 
+			#{regionEnName}, 
+			#{cover}, 
+			#{direction}, 
+			#{distanceToSubway}, 
+			#{parlour}, 
+			#{district}, 
+			#{adminId}, 
+			#{bathroom}, 
+			#{street}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.xunwu.frist.demo.entity.HouseEntity">
+		update house 
+		<set>
+			<if test="title != null">`title` = #{title}, </if>
+			<if test="price != null">`price` = #{price}, </if>
+			<if test="area != null">`area` = #{area}, </if>
+			<if test="room != null">`room` = #{room}, </if>
+			<if test="floor != null">`floor` = #{floor}, </if>
+			<if test="totalFloor != null">`total_floor` = #{totalFloor}, </if>
+			<if test="watchTimes != null">`watch_times` = #{watchTimes}, </if>
+			<if test="buildYear != null">`build_year` = #{buildYear}, </if>
+			<if test="status != null">`status` = #{status}, </if>
+			<if test="createTime != null">`create_time` = #{createTime}, </if>
+			<if test="lastUpdateTime != null">`last_update_time` = #{lastUpdateTime}, </if>
+			<if test="cityEnName != null">`city_en_name` = #{cityEnName}, </if>
+			<if test="regionEnName != null">`region_en_name` = #{regionEnName}, </if>
+			<if test="cover != null">`cover` = #{cover}, </if>
+			<if test="direction != null">`direction` = #{direction}, </if>
+			<if test="distanceToSubway != null">`distance_to_subway` = #{distanceToSubway}, </if>
+			<if test="parlour != null">`parlour` = #{parlour}, </if>
+			<if test="district != null">`district` = #{district}, </if>
+			<if test="adminId != null">`admin_id` = #{adminId}, </if>
+			<if test="bathroom != null">`bathroom` = #{bathroom}, </if>
+			<if test="street != null">`street` = #{street}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from house where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from house where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>
