@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.generator.dao.SupportAddressDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.generator.entity.SupportAddressEntity" id="supportAddressMap">
+        <result property="id" column="id"/>
+        <result property="belongTo" column="belong_to"/>
+        <result property="enName" column="en_name"/>
+        <result property="cnName" column="cn_name"/>
+        <result property="level" column="level"/>
+        <result property="baiduMapLng" column="baidu_map_lng"/>
+        <result property="baiduMapLat" column="baidu_map_lat"/>
+    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.modules.generator.entity.SupportAddressEntity">
+		select * from support_address where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.modules.generator.entity.SupportAddressEntity">
+		select * from support_address
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from support_address 
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.modules.generator.entity.SupportAddressEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into support_address
+		(
+			`belong_to`, 
+			`en_name`, 
+			`cn_name`, 
+			`level`, 
+			`baidu_map_lng`, 
+			`baidu_map_lat`
+		)
+		values
+		(
+			#{belongTo}, 
+			#{enName}, 
+			#{cnName}, 
+			#{level}, 
+			#{baiduMapLng}, 
+			#{baiduMapLat}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.modules.generator.entity.SupportAddressEntity">
+		update support_address 
+		<set>
+			<if test="belongTo != null">`belong_to` = #{belongTo}, </if>
+			<if test="enName != null">`en_name` = #{enName}, </if>
+			<if test="cnName != null">`cn_name` = #{cnName}, </if>
+			<if test="level != null">`level` = #{level}, </if>
+			<if test="baiduMapLng != null">`baidu_map_lng` = #{baiduMapLng}, </if>
+			<if test="baiduMapLat != null">`baidu_map_lat` = #{baiduMapLat}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from support_address where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from support_address where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

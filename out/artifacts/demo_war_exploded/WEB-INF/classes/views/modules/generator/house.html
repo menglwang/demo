@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>房屋信息表</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<link rel="stylesheet" href="../../css/bootstrap.min.css">
+<link rel="stylesheet" href="../../css/font-awesome.min.css">
+<link rel="stylesheet" href="../../plugins/jqgrid/ui.jqgrid-bootstrap.css">
+<link rel="stylesheet" href="../../plugins/ztree/css/metroStyle/metroStyle.css">
+<link rel="stylesheet" href="../../css/main.css">
+<script src="../../libs/jquery.min.js"></script>
+<script src="../../plugins/layer/layer.js"></script>
+<script src="../../libs/bootstrap.min.js"></script>
+<script src="../../libs/vue.min.js"></script>
+<script src="../../plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="../../plugins/jqgrid/jquery.jqGrid.min.js"></script>
+<script src="../../plugins/ztree/jquery.ztree.all.min.js"></script>
+<script src="../../js/common.js"></script>
+</head>
+<body>
+<div id="rrapp" v-cloak>
+	<div v-show="showList">
+		<div class="grid-btn">
+			<a v-if="hasPermission('house:save')" class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+			<a v-if="hasPermission('house:update')" class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
+			<a v-if="hasPermission('house:delete')" class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+		</div>
+	    <table id="jqGrid"></table>
+	    <div id="jqGridPager"></div>
+    </div>
+    
+    <div v-show="!showList" class="panel panel-default">
+		<div class="panel-heading">{{title}}</div>
+		<form class="form-horizontal">
+											<div class="form-group">
+			   	<div class="col-sm-2 control-label"></div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="house.title" placeholder=""/>
+			    </div>
+			</div>
+									<div class="form-group">
+			   	<div class="col-sm-2 control-label">价格</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="house.price" placeholder="价格"/>
+			    </div>
+			</div>
+									<div class="form-group">
+			   	<div class="col-sm-2 control-label">面积</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="house.area" placeholder="面积"/>
+			    </div>
+			</div>
+									<div class="form-group">
+			   	<div class="col-sm-2 control-label">卧室数量</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="house.room" placeholder="卧室数量"/>
+			    </div>
+			</div>
+									<div class="form-group">
+			   	<div class="col-sm-2 control-label">楼层</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="house.floor" placeholder="楼层"/>
+			    </div>
+			</div>
+									<div class="form-group">
+			   	<div class="col-sm-2 control-label">总楼层</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="house.totalFloor" placeholder="总楼层"/>
+			    </div>
+			</div>
+									<div class="form-group">
+			   	<div class="col-sm-2 control-label">被看次数</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="house.watchTimes" placeholder="被看次数"/>
+			    </div>
+			</div>
+									<div class="form-group">
+			   	<div class="col-sm-2 control-label">建立年限</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="house.buildYear" placeholder="建立年限"/>
+			    </div>
+			</div>
+									<div class="form-group">
+			   	<div class="col-sm-2 control-label">房屋状态 0-未审核 1-审核通过 2-已出租 3-逻辑删除</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="house.status" placeholder="房屋状态 0-未审核 1-审核通过 2-已出租 3-逻辑删除"/>
+			    </div>
+			</div>
+									<div class="form-group">
+			   	<div class="col-sm-2 control-label">创建时间</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="house.createTime" placeholder="创建时间"/>
+			    </div>
+			</div>
+									<div class="form-group">
+			   	<div class="col-sm-2 control-label">最近数据更新时间</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="house.lastUpdateTime" placeholder="最近数据更新时间"/>
+			    </div>
+			</div>
+									<div class="form-group">
+			   	<div class="col-sm-2 control-label">城市标记缩写 如 北京bj</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="house.cityEnName" placeholder="城市标记缩写 如 北京bj"/>
+			    </div>
+			</div>
+									<div class="form-group">
+			   	<div class="col-sm-2 control-label">地区英文简写 如昌平区 cpq</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="house.regionEnName" placeholder="地区英文简写 如昌平区 cpq"/>
+			    </div>
+			</div>
+									<div class="form-group">
+			   	<div class="col-sm-2 control-label">封面</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="house.cover" placeholder="封面"/>
+			    </div>
+			</div>
+									<div class="form-group">
+			   	<div class="col-sm-2 control-label">房屋朝向</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="house.direction" placeholder="房屋朝向"/>
+			    </div>
+			</div>
+									<div class="form-group">
+			   	<div class="col-sm-2 control-label">距地铁距离 默认-1 附近无地铁</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="house.distanceToSubway" placeholder="距地铁距离 默认-1 附近无地铁"/>
+			    </div>
+			</div>
+									<div class="form-group">
+			   	<div class="col-sm-2 control-label">客厅数量</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="house.parlour" placeholder="客厅数量"/>
+			    </div>
+			</div>
+									<div class="form-group">
+			   	<div class="col-sm-2 control-label">所在小区</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="house.district" placeholder="所在小区"/>
+			    </div>
+			</div>
+									<div class="form-group">
+			   	<div class="col-sm-2 control-label">所属管理员id</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="house.adminId" placeholder="所属管理员id"/>
+			    </div>
+			</div>
+									<div class="form-group">
+			   	<div class="col-sm-2 control-label"></div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="house.bathroom" placeholder=""/>
+			    </div>
+			</div>
+									<div class="form-group">
+			   	<div class="col-sm-2 control-label">街道</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="house.street" placeholder="街道"/>
+			    </div>
+			</div>
+							<div class="form-group">
+				<div class="col-sm-2 control-label"></div> 
+				<input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+				&nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script src="../../js/modules/generator/house.js"></script>
+</body>
+</html>
